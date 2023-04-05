@@ -6,16 +6,19 @@ import dotenv from "dotenv";
 import helmet from "helmet";
 import morgan from "morgan";
 import multer from "multer";
-import { fileUrlToPath } from "url";
+import { fileURLToPath } from "url";
+import path from "path";
+import colors from "colors";
+import { register } from "./controllers/auth.js"
 
 /** CONFIGURATIONS */
-const __filename = fileUrlToPath(import.meta.url);
+const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(helmet());
-app.use(helmet.crossOriginResourcePolicy({ policy: crossOrigin }));
+app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
@@ -31,3 +34,25 @@ const storage = multer.diskStorage({
     cb(null, file.originalname);
   },
 });
+const upload = multer({ storage });
+
+/** ROUTES WITH FILES */
+app.post("/auth/register", upload.single("picture"), register);
+
+/**  MONGOOSE CONNECTION */
+const PORT = process.env.PORT || 9001;
+mongoose
+  .connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    app.listen(PORT, () =>
+      console.log(`Server Running on Port: ${PORT}`.rainbow)
+    );
+
+    /** ONLY ADD DATA ONE TIME */
+    // User.insertMany(dataUser);
+  })
+
+  .catch((error) => console.log(`Server Error: ${error}`));
