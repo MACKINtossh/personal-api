@@ -10,6 +10,8 @@ import { fileURLToPath } from "url";
 import path from "path";
 import colors from "colors";
 import authRoutes from "./routes/auth.js";
+import userRoutes from "./routes/user.js";
+
 import { register } from "./controllers/auth.js";
 
 /** CONFIGURATIONS */
@@ -42,6 +44,7 @@ app.post("/auth/register", upload.single("picture"), register);
 
 /** ROUTES */
 app.use("/auth", authRoutes);
+Vapp.use("/user", userRoutes);
 
 /**  MONGOOSE CONNECTION */
 const PORT = process.env.PORT || 9001;
