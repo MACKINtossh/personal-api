@@ -12,8 +12,8 @@ export const register = async (req, res) => {
       password,
       picturePath,
       friends,
-      occupation,
       location,
+      occupation,
     } = req.body;
 
     const salt = await bcrypt.genSalt();
@@ -27,8 +27,8 @@ export const register = async (req, res) => {
       password: passwordHash,
       picturePath,
       friends,
-      occupation,
       location,
+      occupation,
       viewedProfile: random,
       impressions: random,
     });
